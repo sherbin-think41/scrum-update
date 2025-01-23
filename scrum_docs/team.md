@@ -1,6 +1,6 @@
 # Team Updates
 
-## Updates for 23/03/2025
+## Updates for 23/03/2025 by ['Sherbin']
 
 ### Frontend
 - Completed the UI for menu browsing and search functionality.
@@ -30,7 +30,7 @@
   - Expand test scenarios to include edge cases for mobile responsiveness.
   - Verify fixes for the reported bugs in the next sprint.
 
-## Updates for 24/03/2025
+## Updates for 24/03/2025 by ['Adarash']
 
 ### Frontend
 - Implemented responsive design for the user profile page.
@@ -60,7 +60,7 @@
   - Expand test scenarios to include cross-browser and cross-device testing.
   - Follow up on reported issues with detailed bug reports.
 
-## Updates for 25/03/2025
+## Updates for 24/03/2025 by ['Hussian']
 
 ### Frontend
 - Implemented responsive design for the user profile page.
