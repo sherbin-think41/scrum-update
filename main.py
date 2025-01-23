@@ -1,131 +1,12 @@
 import json
-from datetime import datetime
 import os
-
-# Summary of the scrum meetings
-scrum_meeting_summaries = [
-    {
-        "date": "[23/03/2025]",
-        "duration": "[10 minutes]",
-        "participant": ["Sherbin"],
-        "updates": {
-            "frontend": [
-                "Completed the UI for menu browsing and search functionality.",
-                "Finalized the design for the checkout screen."
-            ],
-            "backend": [
-                "API for user authentication and payment processing is now operational.",
-                "Resolved issues with order synchronization in the database."
-            ],
-            "qa": [
-                "Completed testing of the menu display feature on mobile devices.",
-                "Reported 3 critical bugs related to order tracking."
-            ]
-        },
-        "blockers": {
-            "frontend": "Delay in integrating the payment gateway due to API response inconsistencies.",
-            "backend": "Difficulty in handling high-volume order simulations during stress testing.",
-            "qa": "Limited test coverage for older Android versions causing feature incompatibilities."
-        },
-        "next_steps": {
-            "frontend": [
-                "Begin integration of the payment gateway once API fixes are applied.",
-                "Collaborate with the backend team to improve order status updates in the UI."
-            ],
-            "backend": [
-                "Optimize server response time to handle peak loads.",
-                "Fix payment API inconsistencies and re-run tests."
-            ],
-            "qa": [
-                "Expand test scenarios to include edge cases for mobile responsiveness.",
-                "Verify fixes for the reported bugs in the next sprint."
-            ]
-        }
-    },
-    {
-        "date": "[24/03/2025]",
-        "duration": "[15 minutes]",
-        "participant": ["Adarash"],
-        "updates": {
-            "frontend": [
-                "Implemented responsive design for the user profile page.",
-                "Updated the navigation bar to include a quick access menu."
-            ],
-            "backend": [
-                "Enhanced API security for user data endpoints.",
-                "Deployed a new caching mechanism to reduce database load."
-            ],
-            "qa": [
-                "Verified the functionality of the user profile page across devices.",
-                "Conducted exploratory testing on the payment flow."
-            ]
-        },
-        "blockers": {
-            "frontend": "Challenges in optimizing animations for older browsers.",
-            "backend": "Unexpected errors during database migration.",
-            "qa": "Insufficient test cases for cross-browser compatibility."
-        },
-        "next_steps": {
-            "frontend": [
-                "Resolve animation optimization issues and test on targeted browsers.",
-                "Collaborate with the design team to finalize the dashboard UI."
-            ],
-            "backend": [
-                "Address database migration issues and validate the data integrity.",
-                "Improve logging mechanisms to facilitate debugging."
-            ],
-            "qa": [
-                "Expand test scenarios to include cross-browser and cross-device testing.",
-                "Follow up on reported issues with detailed bug reports."
-            ]
-        }
-
-    },
-    {
-        "date": "[24/03/2025]",
-        "duration": "[15 minutes]",
-        "participant": ["Hussian"],
-        "updates": {
-            "frontend": [
-                "Implemented responsive design for the user profile page.",
-                "Updated the navigation bar to include a quick access menu."
-            ],
-            "backend": [
-                "Enhanced API security for user data endpoints.",
-                "Deployed a new caching mechanism to reduce database load."
-            ],
-            "qa": [
-                "Verified the functionality of the user profile page across devices.",
-                "Conducted exploratory testing on the payment flow."
-            ]
-        },
-        "blockers": {
-            "frontend": "Challenges in optimizing animations for older browsers.",
-            "backend": "Unexpected errors during database migration.",
-            "qa": "Insufficient test cases for cross-browser compatibility."
-        },
-        "next_steps": {
-            "frontend": [
-                "Resolve animation optimization issues and test on targeted browsers.",
-                "Collaborate with the design team to finalize the dashboard UI."
-            ],
-            "backend": [
-                "Address database migration issues and validate the data integrity.",
-                "Improve logging mechanisms to facilitate debugging."
-            ],
-            "qa": [
-                "Expand test scenarios to include cross-browser and cross-device testing.",
-                "Follow up on reported issues with detailed bug reports."
-            ]
-        }
-
-    }
-]
+from datetime import datetime
 
 # Define file paths for storing documents
 BASE_DIR = "./scrum_docs"
 INDIVIDUAL_DIR = os.path.join(BASE_DIR, "individual")
 TEAM_FILE = os.path.join(BASE_DIR, "team.md")
+SCRUM_SUMMARY_FILE = "scrum_meeting_summaries.json"  # JSON file to load scrum summaries
 
 # Create directories if they don't exist
 os.makedirs(INDIVIDUAL_DIR, exist_ok=True)
@@ -147,6 +28,10 @@ def content_exists_for_date_and_name(file_path, date, participants):
 def get_date_string():
     return datetime.now().strftime("%Y-%m-%d")
 
+# Function to load the scrum summaries from a JSON file
+def load_scrum_summaries():
+    with open(SCRUM_SUMMARY_FILE, "r", encoding="utf-8") as file:
+        return json.load(file)
 
 # Function to update individual participant documents
 def update_individual_participant_documents(scrum_transcript, date_string):
@@ -180,7 +65,6 @@ def update_individual_participant_documents(scrum_transcript, date_string):
             if not os.path.exists(individual_file):
                 write_to_file(individual_file, f"# {participant}'s Updates\n\n")
             write_to_file(individual_file, individual_summary)
-
 
 # Function to update team document
 def update_team_document(scrum_transcript, date_string):
@@ -216,7 +100,6 @@ def update_team_document(scrum_transcript, date_string):
 
         write_to_file(TEAM_FILE, team_summary)
 
-
 # Main function to process scrum transcripts
 def process_scrum_transcripts(scrum_transcripts):
     for scrum_transcript in scrum_transcripts:
@@ -228,8 +111,10 @@ def process_scrum_transcripts(scrum_transcripts):
         # Update team document
         update_team_document(scrum_transcript, date_string)
 
+# Load scrum summaries from file
+scrum_meeting_summaries = load_scrum_summaries()
 
-# Call the main function
+# Call the main function to process the summaries
 process_scrum_transcripts(scrum_meeting_summaries)
 
 print("Documents updated successfully!")

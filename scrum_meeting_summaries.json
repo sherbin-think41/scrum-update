@@ -1,0 +1,116 @@
+[
+  {
+    "date": "[23/03/2025]",
+    "duration": "[10 minutes]",
+    "participant": ["Sherbin"],
+    "updates": {
+      "frontend": [
+        "Completed the UI for menu browsing and search functionality.",
+        "Finalized the design for the checkout screen."
+      ],
+      "backend": [
+        "API for user authentication and payment processing is now operational.",
+        "Resolved issues with order synchronization in the database."
+      ],
+      "qa": [
+        "Completed testing of the menu display feature on mobile devices.",
+        "Reported 3 critical bugs related to order tracking."
+      ]
+    },
+    "blockers": {
+      "frontend": "Delay in integrating the payment gateway due to API response inconsistencies.",
+      "backend": "Difficulty in handling high-volume order simulations during stress testing.",
+      "qa": "Limited test coverage for older Android versions causing feature incompatibilities."
+    },
+    "next_steps": {
+      "frontend": [
+        "Begin integration of the payment gateway once API fixes are applied.",
+        "Collaborate with the backend team to improve order status updates in the UI."
+      ],
+      "backend": [
+        "Optimize server response time to handle peak loads.",
+        "Fix payment API inconsistencies and re-run tests."
+      ],
+      "qa": [
+        "Expand test scenarios to include edge cases for mobile responsiveness.",
+        "Verify fixes for the reported bugs in the next sprint."
+      ]
+    }
+  },
+  {
+    "date": "[24/03/2025]",
+    "duration": "[15 minutes]",
+    "participant": ["Adarash"],
+    "updates": {
+      "frontend": [
+        "Implemented responsive design for the user profile page.",
+        "Updated the navigation bar to include a quick access menu."
+      ],
+      "backend": [
+        "Enhanced API security for user data endpoints.",
+        "Deployed a new caching mechanism to reduce database load."
+      ],
+      "qa": [
+        "Verified the functionality of the user profile page across devices.",
+        "Conducted exploratory testing on the payment flow."
+      ]
+    },
+    "blockers": {
+      "frontend": "Challenges in optimizing animations for older browsers.",
+      "backend": "Unexpected errors during database migration.",
+      "qa": "Insufficient test cases for cross-browser compatibility."
+    },
+    "next_steps": {
+      "frontend": [
+        "Resolve animation optimization issues and test on targeted browsers.",
+        "Collaborate with the design team to finalize the dashboard UI."
+      ],
+      "backend": [
+        "Address database migration issues and validate the data integrity.",
+        "Improve logging mechanisms to facilitate debugging."
+      ],
+      "qa": [
+        "Expand test scenarios to include cross-browser and cross-device testing.",
+        "Follow up on reported issues with detailed bug reports."
+      ]
+    }
+  },
+  {
+    "date": "[24/03/2025]",
+    "duration": "[15 minutes]",
+    "participant": ["Hussian"],
+    "updates": {
+      "frontend": [
+        "Refactored the homepage to improve load times and performance.",
+        "Updated the footer design to be more user-friendly."
+      ],
+      "backend": [
+        "Optimized database queries to improve load time.",
+        "Implemented a new API for retrieving real-time user data."
+      ],
+      "qa": [
+        "Tested the new homepage performance under different network conditions.",
+        "Verified that the real-time user data API returns correct results."
+      ]
+    },
+    "blockers": {
+      "frontend": "Difficulty in ensuring cross-device compatibility for the updated homepage.",
+      "backend": "Issues with the caching layer causing outdated data to be served.",
+      "qa": "Test failures on certain mobile browsers due to rendering issues."
+    },
+    "next_steps": {
+      "frontend": [
+        "Ensure homepage updates are fully responsive on all devices.",
+        "Test with various screen resolutions and adjust the footer layout accordingly."
+      ],
+      "backend": [
+        "Resolve caching issues and implement better cache invalidation.",
+        "Run performance benchmarks for the real-time data API."
+      ],
+      "qa": [
+        "Test the homepage on more mobile devices and ensure compatibility.",
+        "Prepare test cases for stress testing the real-time user data API."
+      ]
+    }
+  }
+]
