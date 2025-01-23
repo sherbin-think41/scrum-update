@@ -112,5 +112,43 @@
         "Prepare test cases for stress testing the real-time user data API."
       ]
     }
+  },
+  {
+    "date": "[25/03/2025]",
+    "duration": "[11 minutes]",
+    "participant": ["Sherbin"],
+    "updates": {
+      "frontend": [
+        "Completed the payment functionality.",
+        "Implemented checkout in cart"
+      ],
+      "backend": [
+        "API for  payment processing is now operational.",
+        "Resolved issues with razorpay"
+      ],
+      "qa": [
+        "Completed testing of cart checkout",
+        "Reported 2 critical bugs related to payment tracking."
+      ]
+    },
+    "blockers": {
+      "frontend": "Delay in integrating the payment gateway due to API response inconsistencies.",
+      "backend": "Difficulty in handling high-volume order simulations during stress testing.",
+      "qa": "Limited test coverage for older Android versions causing feature incompatibilities."
+    },
+    "next_steps": {
+      "frontend": [
+        "Begin integration of the payment gateway once API fixes are applied.",
+        "Collaborate with the backend team to improve order status updates in the UI."
+      ],
+      "backend": [
+        "Optimize server response time to handle peak loads.",
+        "Fix payment API inconsistencies and re-run tests."
+      ],
+      "qa": [
+        "Expand test scenarios to include edge cases for mobile responsiveness.",
+        "Verify fixes for the reported bugs in the next sprint."
+      ]
+    }
   }
 ]
