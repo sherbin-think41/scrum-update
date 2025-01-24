@@ -9,81 +9,11 @@ load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 
-
-def generate_scrum_summary(project_scrum, individual_scrum, individual_name):
-    response = openai.ChatCompletion.create(
-        model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content": "You are a scrum summary update bot."},
-            {"role": "user", "content": f"You are given the project scrum information: {project_scrum}. Analyze the document properly."},
-            {"role": "user", "content": f"Scrum summary of individual: {individual_scrum}"},
-            {"role": "user", "content": """
-                Please provide the scrum summaries in the following strict format:
-
-                Weekly Summary:
-                - Start with the overall project progress.
-                - Include notable achievements this week.
-                - Outline the next steps for the project.
-
-                Daily Summary for Individual:
-                - Start with the tasks completed by the individual.
-                - Include the review status of tasks.
-                - Mention any challenges faced.
-                - Outline next steps for the individual.
-
-                Please ensure the format is consistent with the labels "Weekly Summary:" and "Daily Summary:" for easy extraction.
-            """
-             }
-        ]
-    )
-    content = response['choices'][0]['message']['content']
-    print(content)
-
-    content = content.strip()
-
-    # Regex pattern to capture Weekly Summary and Daily Summary
-    weekly_pattern = re.compile(r"Weekly Summary[:\-]?\s*(.*?)(?=Daily Summary|$)", re.S)
-    daily_pattern = re.compile(r"Daily Summary[^\n]*[:\-]?\s*(.*)", re.S)
-
-    # Extract Weekly Summary
-    weekly_match = weekly_pattern.search(content)
-    if weekly_match:
-        weekly_summary = weekly_match.group(1).strip()
-    else:
-        print("Error: Weekly Summary not found in response.")
-        return
-
-    # Extract Daily Summary
-    daily_match = daily_pattern.search(content)
-    if daily_match:
-        daily_summary = daily_match.group(1).strip()
-    else:
-        print("Error: Daily Summary not found in response.")
-        return
-
-    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-
-    # Create a folder named 'scrum_summaries' if it doesn't exist
-    folder_name = "scrum_summaries"
-    if not os.path.exists(folder_name):
-        os.makedirs(folder_name)
-
-    # Save individual markdown file with the name of the individual
-    individual_filename = os.path.join(folder_name, f"{individual_name}.md")
-    with open(individual_filename, "w") as individual_file:
-        individual_file.write(f"# {individual_name}'s Daily Scrum Summary\n\n{daily_summary}")
-
-    # Create the team document (this will contain the weekly summary)
-    team_filename = os.path.join(folder_name, "team_scrum.md")
-    # with open(team_filename, "a") as team_file:  # Open with 'a' to append summaries
-    #     team_file.write(f"# Team Scrum Progress by - {individual_filename}\n\n{weekly_summary}\n\n---\n")
-
-    print(f"Scrum summaries saved as {individual_filename} and {team_filename}")
-
 def update_scrum_summary(project_scrum, individual_scrum, individual_name):
     folder_name = "scrum_summaries"
     individual_filename = os.path.join(folder_name, f"{individual_name}.md")
     team_filename = os.path.join(folder_name, "team_scrum.md")
+    current_date = datetime.now().strftime('%Y-%m-%d')
 
     # Read existing team file content, if it exists
     existing_team_summary = ""
@@ -99,7 +29,7 @@ def update_scrum_summary(project_scrum, individual_scrum, individual_name):
             {"role": "user", "content": f"Project scrum information: {project_scrum}. Individual contribution: {individual_scrum}."},
             {"role": "user", "content": f"""
                 Update the team document to include:
-                - Individual contributions: {individual_filename}.
+                - Individual contributions: {individual_scrum}.
                 - Existing team weekly summary (if any): {existing_team_summary}.
                 - A consolidated weekly summary of all contributions and project progress.
                 Ensure the format is structured and easy to read.
@@ -108,29 +38,57 @@ def update_scrum_summary(project_scrum, individual_scrum, individual_name):
     )
 
     # Extract the generated content
-    content = response['choices'][0]['message']['content']
+    consolidated_summary = response['choices'][0]['message']['content']
 
     # Ensure the folder exists
     if not os.path.exists(folder_name):
         os.makedirs(folder_name)
 
-    # Update the individual's markdown file
+    # Update the individual document
     if os.path.exists(individual_filename):
         with open(individual_filename, "a") as individual_file:
-            individual_file.write(f"\n# Update for {datetime.now().strftime('%Y-%m-%d')}\n\n{individual_scrum}\n")
+            individual_file.write(f"\n# Update for {current_date}\n\n{individual_scrum}\n")
     else:
         with open(individual_filename, "w") as individual_file:
-            individual_file.write(f"# {individual_name}'s Daily Scrum Summary\n\n{individual_scrum}\n")
+            individual_file.write(f"# {individual_name}'s Scrum Updates\n\n")
+            individual_file.write(f"# Update for {current_date}\n\n{individual_scrum}\n")
 
-    # Update the team markdown file
+    # Add a weekly summary to the individual file if it's the end of the week
+    if datetime.now().weekday() == 6:  # Sunday is the last day of the week
+        with open(individual_filename, "a") as individual_file:
+            individual_file.write(f"\n# Weekly Summary (Ending {current_date})\n\n{consolidated_summary}\n")
+
+    # Update the team document
     if os.path.exists(team_filename):
-        with open(team_filename, "a") as team_file:
-            team_file.write(f"## Weekly Summary Update (as of {datetime.now().strftime('%Y-%m-%d')})\n\n{content}\n\n---\n")
-    else:
+        with open(team_filename, "r") as team_file:
+            team_content = team_file.read()
+
+        # Check for an existing summary for the current week and replace or append
+        date_pattern = rf"## Weekly Summary Update \(as of {current_date}\).*?---"
+        if re.search(date_pattern, team_content, flags=re.S):
+            # Replace the existing summary
+            updated_content = re.sub(
+                date_pattern,
+                f"## Weekly Summary Update (as of {current_date})\n\n{consolidated_summary}\n\n---",
+                team_content,
+                flags=re.S
+            )
+        else:
+            # Append the new summary
+            updated_content = (
+                team_content
+                + f"\n## Weekly Summary Update (as of {current_date})\n\n{consolidated_summary}\n\n---\n"
+            )
+
         with open(team_filename, "w") as team_file:
-            team_file.write(f"## Weekly Summary Update (as of {datetime.now().strftime('%Y-%m-%d')})\n\n{content}\n\n---\n")
+            team_file.write(updated_content)
+    else:
+        # Create a new team file if it doesn't exist
+        with open(team_filename, "w") as team_file:
+            team_file.write(f"## Weekly Summary Update (as of {current_date})\n\n{consolidated_summary}\n\n---\n")
 
     print(f"Scrum summaries updated in {individual_filename} and {team_filename}")
+
 
 
 if __name__ == "__main__":
