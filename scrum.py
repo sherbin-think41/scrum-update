@@ -20,13 +20,8 @@ def update_scrum_summary(project_scrum, individual_scrum, individual_name):
     if os.path.exists(team_filename):
         with open(team_filename, "r") as team_file:
             existing_team_summary = team_file.read()
+            print(f"Existing team summary read from {existing_team_summary}")
 
-    # Check for existing individual contributions in the team document
-    individual_contributions = ""
-    individual_section_pattern = rf"{individual_name}:\n(.*?)(?=\n[A-Z]|$)"
-    match = re.search(individual_section_pattern, existing_team_summary, re.DOTALL)
-    if match:
-        individual_contributions = match.group(1).strip()
 
     # Generate the response using OpenAI API
     response = openai.ChatCompletion.create(
@@ -39,14 +34,14 @@ def update_scrum_summary(project_scrum, individual_scrum, individual_name):
                 "content": f"""
                 Update the team document with the following:
                 - Include all individual contributions to date for {individual_name}.
-                - Individual contributions should include: 
-                  - Existing contributions: {individual_contributions}.
-                  - New contribution: {individual_scrum}.
+                - Individual contributions should include:
+                  - contributions: {individual_scrum}.
                 - Ensure the overall team summary integrates:
                   - Project overview: {project_scrum}.
-                  - Existing team summary: {existing_team_summary}.
+                  - Existing team summary (if available): {existing_team_summary}.
                   - Consolidated weekly progress.
-                - Preserve the structure: 
+                - If no existing team summary is available, generate one from the individual contributions.
+                - Preserve the structure:
                   - Individual contributions listed under respective names.
                   - A cohesive consolidated summary at the end.
                 """
@@ -91,9 +86,11 @@ if __name__ == "__main__":
     individual_scrum_husian = "Husian has successfully implemented the payment gateway integration, allowing users to pay for orders using their credit card. This feature has been reviewed and approved for deployment."
 
     individual_scrum_sherbin_1 = "Sherbin has completed the login and registration feature, which allows users to securely sign up and log in to the app. The feature has been tested and is ready for deployment."
+
     individual_scrum_sherbin_2 = "Sherbin has successfully implemented the order tracking feature, enabling users to track their orders and view their order history. This feature has been reviewed and approved for deployment."
 
     update_scrum_summary(project_scrum, individual_scrum_adarsh, "adarsh")
     update_scrum_summary(project_scrum, individual_scrum_husian, "husian")
-    update_scrum_summary(project_scrum, individual_scrum_sherbin_1, "sherbin")
+    update_scrum_summary(project_scrum, individual_scrum_sherbin_1, "sherbin"),
     update_scrum_summary(project_scrum, individual_scrum_sherbin_2, "sherbin")
+
