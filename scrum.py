@@ -22,31 +22,32 @@ def update_scrum_summary(project_scrum, individual_scrum, individual_name):
             existing_team_summary = team_file.read()
             print(f"Existing team summary read from {existing_team_summary}")
 
-
     # Generate the response using OpenAI API
     response = openai.ChatCompletion.create(
         model="gpt-4o-mini",
         messages=[
-            {"role": "system", "content": "You are a scrum summary update bot."},
+            {"role": "system",
+             "content": "You are a scrum summary update bot. Do not miss any individual contributions; ensure all contributions are included in the update."},
             {"role": "user", "content": f"Project scrum information: {project_scrum}."},
             {
                 "role": "user",
                 "content": f"""
-                Update the team document with the following:
-                - Include all individual contributions to date for {individual_name}.
-                - Individual contributions should include:
-                  - contributions: {individual_scrum}.
-                - Ensure the overall team summary integrates:
-                  - Project overview: {project_scrum}.
-                  - Existing team summary (if available): {existing_team_summary}.
-                  - Consolidated weekly progress.
-                - If no existing team summary is available, generate one from the individual contributions.
-                - Preserve the structure:
-                  - Individual contributions listed under respective names.
-                  - A cohesive consolidated summary at the end.
-                """
+            Update the team document with the following:
+            - Include all individual contributions to date for {individual_name}.
+            - Individual contributions should include:
+              - contributions: {individual_scrum}.
+            - Ensure the overall team summary integrates:
+              - Project overview: {project_scrum}.
+              - Existing team summary (if available): {existing_team_summary}.
+              - Consolidated weekly progress.
+            - If no existing team summary is available, generate one from the individual contributions.
+            - Preserve the structure:
+              - Individual contributions listed under respective names.
+              - A cohesive consolidated summary at the end.
+            """
             }
-        ]
+        ],
+        temperature=0.2
     )
 
     # Extract the generated content
@@ -89,8 +90,11 @@ if __name__ == "__main__":
 
     individual_scrum_sherbin_2 = "Sherbin has successfully implemented the order tracking feature, enabling users to track their orders and view their order history. This feature has been reviewed and approved for deployment."
 
-    update_scrum_summary(project_scrum, individual_scrum_adarsh, "adarsh")
-    update_scrum_summary(project_scrum, individual_scrum_husian, "husian")
+    individual_scrum_husian_2 ="""Husian has completed the add to cart functionality, allowing users to add items to their shopping cart. This feature has been on review"""
+
+    update_scrum_summary(project_scrum, individual_scrum_adarsh, "adarsh"),
+    update_scrum_summary(project_scrum, individual_scrum_husian, "husian"),
     update_scrum_summary(project_scrum, individual_scrum_sherbin_1, "sherbin"),
+    update_scrum_summary(project_scrum, individual_scrum_husian_2, "husian"),
     update_scrum_summary(project_scrum, individual_scrum_sherbin_2, "sherbin")
 
