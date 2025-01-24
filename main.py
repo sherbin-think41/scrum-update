@@ -114,7 +114,6 @@ def process_scrum_transcripts(scrum_transcripts):
 # Load scrum summaries from file
 scrum_meeting_summaries = load_scrum_summaries()
 
-# Call the main function to process the summaries
 process_scrum_transcripts(scrum_meeting_summaries)
 
 print("Documents updated successfully!")
