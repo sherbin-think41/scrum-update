@@ -9,14 +9,12 @@ sample_formats = {
         "Weekly Summary: Summary of the individual’s contributions for the week"
     ],
     "team": [
-        "Date: Date of the update",
-        "Individuals Contributions: Individual contributions for the week",
+        # "Individuals Contributions: give the summary of what each individual is worked on",
         "Accomplishments: What the team achieved yesterday or recently",
         "Next Steps: Next steps for the team",
         "Weekly Summary: Summary of the team's progress and contributions for the week"
     ]
 }
-
 
 def load_team_document(file_path):
     try:
@@ -53,7 +51,6 @@ scrum_Summary2 = {
     "next_steps": "Integrate the finalized dashboard design with backend APIs and test user workflows.",
 
 }
-
 scrum_Summary3 = {
     "name": "Jane Smith",
     "date": "2025-01-29",
@@ -72,9 +69,9 @@ SCRUM_PROMPT = f"""
          - A weekly summary at the end, summarizing the work done by each individual throughout the week.
 
        - Team Documents ({team_docs}): This should include:
-         - A  detailed weekly summary of the work done by each team member.
          - A detailed update on the team's progress use individual contributions to make the update.
          - Every task or project milestone and individual contributions should be noted, ensuring nothing is missed.
+         - A detailed weekly summary of the work done by each team member, providing a clear overview of the tasks they completed during the week.
          - **Ensure that the team document includes the contributions of all individuals, including those added previously**. When updating the team document, do not remove any existing individual contributions.
 
     2. Provide the following in your response:
