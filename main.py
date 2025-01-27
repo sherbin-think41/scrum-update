@@ -1,119 +1,86 @@
+import openai
 import json
+import re
+from dotenv import load_dotenv
 import os
-from datetime import datetime
+from template import SCRUM_PROMPT
 
-# Define file paths for storing documents
-BASE_DIR = "./scrum_docs"
-INDIVIDUAL_DIR = os.path.join(BASE_DIR, "individual")
-TEAM_FILE = os.path.join(BASE_DIR, "team.md")
-SCRUM_SUMMARY_FILE = "scrum_meeting_summaries.json"  # JSON file to load scrum summaries
+# Load environment variables from .env file
+load_dotenv()
 
-# Create directories if they don't exist
-os.makedirs(INDIVIDUAL_DIR, exist_ok=True)
+# Get the OpenAI API key from environment variables
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
-# Function to write or append content to a file
-def write_to_file(file_path, content):
-    with open(file_path, "a", encoding="utf-8") as file:
-        file.write(content)
 
-# Function to check if content for a specific date and participant exists in a file
-def content_exists_for_date_and_name(file_path, date, participants):
-    if not os.path.exists(file_path):
-        return False
-    with open(file_path, "r", encoding="utf-8") as file:
-        content = file.read()
-        return any(f"## Updates for {date} by {participant}" in content for participant in participants)
+def get_scrum_update():
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-4o-mini",  # Use a suitable model
+            messages=[
+                {"role": "system", "content": "You are a scrum summary update bot."},
+                {"role": "user", "content":  f" {SCRUM_PROMPT}"}
+            ]
+        )
+        return response["choices"][0]["message"]["content"]
+    except Exception as e:
+        return f"Error analyzing reviews: {e}"
 
-# Function to generate today's date string
-def get_date_string():
-    return datetime.now().strftime("%Y-%m-%d")
 
-# Function to load the scrum summaries from a JSON file
-def load_scrum_summaries():
-    with open(SCRUM_SUMMARY_FILE, "r", encoding="utf-8") as file:
-        return json.load(file)
+def extract_json_from_text(text):
+    # Regular expression pattern to match the JSON-like content
+    try:
+        # Search for the JSON structure in the response
+        json_match = re.search(r'```json\n(.*?)```', text, re.DOTALL)
+        if json_match:
+            json_str = json_match.group(1)  # Extract JSON part
+            return json.loads(json_str)  # Parse the JSON
+        else:
+            raise ValueError("No JSON found in the response.")
+    except Exception as e:
+        print(f"Error extracting JSON: {e}")
+        return None
 
-# Function to update individual participant documents
-def update_individual_participant_documents(scrum_transcript, date_string):
-    for participant in scrum_transcript.get("participant", []):
-        individual_file = os.path.join(INDIVIDUAL_DIR, f"{participant}.md")
-        individual_summary = f"# Updates for {participant}\n\n## Date: {date_string}\n\n"
 
-        # Add updates
-        for category, updates in scrum_transcript.get("updates", {}).items():
-            individual_summary += f"### {category.capitalize()}\n"
-            for update in updates:
-                individual_summary += f"- {update}\n"
-            individual_summary += "\n"
+def save_documents(scrum_update_json, folder_path="documents"):
+    try:
+        # Ensure the folder exists
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
 
-        # Add blockers
-        individual_summary += "### Blockers\n"
-        for category, blocker in scrum_transcript.get("blockers", {}).items():
-            individual_summary += f"- **{category.capitalize()}**: {blocker}\n"
-        individual_summary += "\n"
+        # Extract valid JSON from the raw text
+        scrum_update = extract_json_from_text(scrum_update_json)
+        print("Scrum Update:", scrum_update)
+        if scrum_update is None:
+            print("Failed to extract or parse JSON.")
+            return
 
-        # Add next steps
-        individual_summary += "### Next Steps\n"
-        for category, steps in scrum_transcript.get("next_steps", {}).items():
-            individual_summary += f"- **{category.capitalize()}**:\n"
-            for step in steps:
-                individual_summary += f"  - {step}\n"
-        individual_summary += "\n"
+        # Save team document
+        team_document_path = os.path.join(folder_path, "team_document.md")
+        with open(team_document_path, "w") as file:
+            file.write(scrum_update["team_document"])
+        print(f"Team document saved as '{team_document_path}'")
 
-        # Write to individual document if content doesn't exist
-        if not content_exists_for_date_and_name(individual_file, date_string, [participant]):
-            if not os.path.exists(individual_file):
-                write_to_file(individual_file, f"# {participant}'s Updates\n\n")
-            write_to_file(individual_file, individual_summary)
+        # Save individual documents
+        individual_document_path = os.path.join(folder_path, "individual_document.md")
+        with open(individual_document_path, "w") as file:
+            file.write("\n\n\n".join(scrum_update["individual_documents"]))
 
-# Function to update team document
-def update_team_document(scrum_transcript, date_string):
-    team_summary = f"## Updates for {date_string} by {scrum_transcript.get('participant')}\n\n"
+        # Optionally, save the changes log
+        changes_path = os.path.join(folder_path, "changes.json")
+        with open(changes_path, "w") as file:
+            json.dump(scrum_update["changes"], file, indent=4)
+        print(f"Changes saved as '{changes_path}'")
 
-    if not content_exists_for_date_and_name(TEAM_FILE, date_string, scrum_transcript.get("participant", [])):
-        # Add updates
-        for category, updates in scrum_transcript.get("updates", {}).items():
-            category_summary = f"### {category.capitalize()}\n"
-            for update in updates:
-                category_summary += f"- {update}\n"
-            category_summary += "\n"
-            team_summary += category_summary
+    except Exception as e:
+        print(f"Error saving documents: {e}")
 
-        # Add blockers
-        blockers_summary = "### Blockers\n"
-        for category, blocker in scrum_transcript.get("blockers", {}).items():
-            blockers_summary += f"- **{category.capitalize()}**: {blocker}\n"
-        blockers_summary += "\n"
-        team_summary += blockers_summary
+def main():
+    scrum_update_json = get_scrum_update()
 
-        # Add next steps
-        next_steps_summary = "### Next Steps\n"
-        for category, steps in scrum_transcript.get("next_steps", {}).items():
-            next_steps_summary += f"- **{category.capitalize()}**:\n"
-            for step in steps:
-                next_steps_summary += f"  - {step}\n"
-        next_steps_summary += "\n"
-        team_summary += next_steps_summary
 
-        if not os.path.exists(TEAM_FILE):
-            write_to_file(TEAM_FILE, "# Team Updates\n\n")
+    # Save the documents locally
+    save_documents(scrum_update_json)
 
-        write_to_file(TEAM_FILE, team_summary)
 
-# Main function to process scrum transcripts
-def process_scrum_transcripts(scrum_transcripts):
-    for scrum_transcript in scrum_transcripts:
-        date_string = scrum_transcript.get("date", "").strip("[]")
-
-        # Update individual participant documents
-        update_individual_participant_documents(scrum_transcript, date_string)
-
-        # Update team document
-        update_team_document(scrum_transcript, date_string)
-
-# Load scrum summaries from file
-scrum_meeting_summaries = load_scrum_summaries()
-
-process_scrum_transcripts(scrum_meeting_summaries)
-
-print("Documents updated successfully!")
+if __name__ == "__main__":
+    main()
