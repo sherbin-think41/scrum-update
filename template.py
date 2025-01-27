@@ -40,7 +40,7 @@ scrum_Summary = {
     "yesterday": "Worked on the database schema and resolved deployment issues.",
     "blockers": "Awaiting access to production API keys.",
     "next_steps": "Deploy the API integration and validate with QA.",
-    "weekly_summary": "Resolved critical database issues, completed UI improvements, and started API integration."
+
 }
 
 
@@ -51,11 +51,21 @@ scrum_Summary2 = {
     "yesterday": "Completed unit tests for the notification service and fixed bugs in the authentication module.",
     "blockers": "Pending clarification on dashboard requirements from the product team.",
     "next_steps": "Integrate the finalized dashboard design with backend APIs and test user workflows.",
-    "weekly_summary": "Improved test coverage for critical modules, fixed high-priority bugs, and made progress on dashboard development."
+
+}
+
+scrum_Summary3 = {
+    "name": "Jane Smith",
+    "date": "2025-01-29",
+    "plan_for_today": "planing to create a payment system for the dashboard.",
+    "yesterday": "completed unit tests for the notification service and fixed bugs in the authentication module.",
+    "blockers": "No blocks",
+    "next_steps": "integrate testing with payment system and test user workflows.",
+
 }
 
 SCRUM_PROMPT = f"""
-    You are a scrum summary update bot. You are given a {scrum_Summary2}. Based on the scrum summary, your responsibilities are as follows:
+    You are a scrum summary update bot. You are given a {scrum_Summary3}. Based on the scrum summary, your responsibilities are as follows:
     1. Update two sets of documents:
        - Individual Documents ({individual_docs}): This should include daily updates of individual. 
          - A day-wise summary of what each individual is working on.

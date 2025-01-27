@@ -19,7 +19,8 @@ def get_scrum_update():
             messages=[
                 {"role": "system", "content": "You are a scrum summary update bot."},
                 {"role": "user", "content":  f" {SCRUM_PROMPT}"}
-            ]
+            ],
+            temperature=0.2
         )
         return response["choices"][0]["message"]["content"]
     except Exception as e:
@@ -63,8 +64,7 @@ def save_documents(scrum_update_json, folder_path="documents"):
         # Save individual documents
         individual_name = scrum_update["name"]
         individual_document_path = os.path.join(folder_path, f"{individual_name}.md")
-
-        with open(individual_document_path, "w") as file:
+        with open(individual_document_path, "a") as file:
             file.write("\n\n\n".join(scrum_update["individual_documents"]))
 
         # Optionally, save the changes log
