@@ -12,7 +12,7 @@ sample_formats = {
         # "Individuals Contributions: give the summary of what each individual is worked on",
         "Accomplishments: What the team achieved yesterday or recently",
         "Next Steps: Next steps for the team",
-        "Weekly Summary: Summary of the team's progress and contributions for the week"
+        "Weekly Summary: Summary of the team's progress and contributions for the week .make it around 500 words and give the response in keypoints"
     ]
 }
 
@@ -40,8 +40,6 @@ scrum_Summary = {
     "next_steps": "Deploy the API integration and validate with QA.",
 
 }
-
-
 scrum_Summary2 = {
     "name": "Jane Smith",
     "date": "2025-01-28",
@@ -52,7 +50,7 @@ scrum_Summary2 = {
 
 }
 scrum_Summary3 = {
-    "name": "Jane Smith",
+    "name": "Leo",
     "date": "2025-01-29",
     "plan_for_today": "planing to create a payment system for the dashboard.",
     "yesterday": "completed unit tests for the notification service and fixed bugs in the authentication module.",
@@ -71,8 +69,8 @@ SCRUM_PROMPT = f"""
        - Team Documents ({team_docs}): This should include:
          - A detailed update on the team's progress use individual contributions to make the update.
          - Every task or project milestone and individual contributions should be noted, ensuring nothing is missed.
-         - A detailed weekly summary of the work done by each team member, providing a clear overview of the tasks they completed during the week.
-         - **Ensure that the team document includes the contributions of all individuals, including those added previously**. When updating the team document, do not remove any existing individual contributions.
+         - A detailed weekly summary of the work done by each team member, providing a clear overview of the tasks.
+         - **Ensure that the team document includes the contributions of all individuals, including those added previously**. When updating the team document, do not remove any existing other contents ,this should be strictly avoided.
 
     2. Provide the following in your response:
        - The **number of lines** updated in each document.

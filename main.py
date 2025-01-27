@@ -8,6 +8,7 @@ from template import SCRUM_PROMPT
 # Load environment variables from .env file
 load_dotenv()
 
+
 # Get the OpenAI API key from environment variables
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
@@ -78,9 +79,8 @@ def save_documents(scrum_update_json, folder_path="documents"):
 
 # main function
 def main():
+
     scrum_update_json = get_scrum_update()
-
-
     # Save the documents locally
     save_documents(scrum_update_json)
 
