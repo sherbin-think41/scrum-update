@@ -4,6 +4,7 @@ import re
 from dotenv import load_dotenv
 import os
 from template import SCRUM_PROMPT
+from deepdiff import DeepDiff
 
 # Load environment variables from .env file
 load_dotenv()
@@ -57,8 +58,11 @@ def save_documents(scrum_update_json, folder_path="documents"):
             return
 
         # Save team document
+
         team_document_path = os.path.join(folder_path, "team_document.md")
         with open(team_document_path, "w") as file:
+            output_path = "changes.json"
+            compare_and_save_changes(team_document_path, scrum_update["team_document"], output_path)
             file.write(scrum_update["team_document"])
         print(f"Team document saved as '{team_document_path}'")
 
@@ -68,14 +72,31 @@ def save_documents(scrum_update_json, folder_path="documents"):
         with open(individual_document_path, "a") as file:
             file.write("\n\n\n".join(scrum_update["individual_documents"]))
 
-        # Optionally, save the changes log
-        changes_path = os.path.join(folder_path, "changes.json")
-        with open(changes_path, "w") as file:
-            json.dump(scrum_update["changes"], file, indent=4)
-        print(f"Changes saved as '{changes_path}'")
+        # # Optionally, save the changes log
+        # changes_path = os.path.join(folder_path, "changes.json")
+        # with open(changes_path, "w") as file:
+        #     json.dump(scrum_update["changes"], file, indent=4)
+        # print(f"Changes saved as '{changes_path}'")
 
     except Exception as e:
         print(f"Error saving documents: {e}")
+
+
+
+def compare_and_save_changes(content1, content2, output_file):
+
+    # Compare the contents using DeepDiff
+    differences = DeepDiff(content1, content2, view='text')
+
+    # Convert the differences to a serializable format
+    serializable_diff = json.loads(differences.to_json())
+
+    # Save the differences to a JSON file
+    with open(output_file, 'w') as f:
+        json.dump(serializable_diff, f, indent=4)
+
+    return serializable_diff
+
 
 # main function
 def main():
