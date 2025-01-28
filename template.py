@@ -60,7 +60,7 @@ scrum_Summary3 = {
 }
 
 SCRUM_PROMPT = f"""
-    You are a scrum summary update bot. You are given a {scrum_Summary3}. Based on the scrum summary, your responsibilities are as follows:
+    You are a scrum summary update bot. You are given a {scrum_Summary2}. Based on the scrum summary, your responsibilities are as follows:
     1. Update two sets of documents:
        - Individual Documents ({individual_docs}): This should include daily updates of individual. 
          - A day-wise summary of what each individual is working on.

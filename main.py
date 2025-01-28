@@ -3,7 +3,9 @@ import json
 import re
 from dotenv import load_dotenv
 import os
-from template import SCRUM_PROMPT
+import difflib
+from template import SCRUM_PROMPT, load_team_document
+from deepdiff import DeepDiff
 
 # Load environment variables from .env file
 load_dotenv()
@@ -51,14 +53,19 @@ def save_documents(scrum_update_json, folder_path="documents"):
 
         # Extract valid JSON from the raw text
         scrum_update = extract_json_from_text(scrum_update_json)
-        print("Scrum Update:", scrum_update)
         if scrum_update is None:
             print("Failed to extract or parse JSON.")
             return
 
         # Save team document
         team_document_path = os.path.join(folder_path, "team_document.md")
+        if os.path.exists(team_document_path):
+            with open(team_document_path, 'r') as file:
+                content = file.read()
+
         with open(team_document_path, "w") as file:
+            output_path = "changes.json"
+            compare_texts_and_save(content, scrum_update["team_document"], output_path)
             file.write(scrum_update["team_document"])
         print(f"Team document saved as '{team_document_path}'")
 
@@ -68,14 +75,49 @@ def save_documents(scrum_update_json, folder_path="documents"):
         with open(individual_document_path, "a") as file:
             file.write("\n\n\n".join(scrum_update["individual_documents"]))
 
-        # Optionally, save the changes log
-        changes_path = os.path.join(folder_path, "changes.json")
-        with open(changes_path, "w") as file:
-            json.dump(scrum_update["changes"], file, indent=4)
-        print(f"Changes saved as '{changes_path}'")
-
     except Exception as e:
         print(f"Error saving documents: {e}")
+
+
+def compare_texts_and_save(text1, text2, output_path):
+    """
+    Compare two texts, return changes and number of lines changed, and save results to a JSON file.
+
+    Args:
+        text1 (str): First text input.
+        text2 (str): Second text input.
+        output_path (str): Path to save the JSON output.
+
+    Returns:
+        dict: Dictionary containing the changes and the number of lines changed.
+    """
+    # Split the texts into lines
+    text1_lines = text1.splitlines()
+    text2_lines = text2.splitlines()
+
+    # Compare the two texts
+    diff = list(difflib.unified_diff(text1_lines, text2_lines, lineterm=''))
+
+    # Extract changes
+    changes = []
+    for line in diff:
+        if line.startswith('+ ') or line.startswith('- '):
+            changes.append(line)
+
+    # Count number of changed lines
+    num_changes = len(changes)
+
+    # Prepare the result as a dictionary
+    result = {
+        "changes": changes,
+        "num_lines_changed": num_changes
+    }
+
+    # Save the result to a JSON file
+    with open(output_path, 'w') as json_file:
+        json.dump(result, json_file, indent=4)
+
+    return result
 
 # main function
 def main():
