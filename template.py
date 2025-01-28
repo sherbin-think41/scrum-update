@@ -60,7 +60,7 @@ scrum_Summary3 = {
 }
 
 SCRUM_PROMPT = f"""
-    You are a scrum summary update bot. You are given a {scrum_Summary2}. Based on the scrum summary, your responsibilities are as follows:
+    You are a scrum summary update bot. You are given a {scrum_Summary3}. Based on the scrum summary, your responsibilities are as follows:
     1. Update two sets of documents:
        - Individual Documents ({individual_docs}): This should include daily updates of individual. 
          - A day-wise summary of what each individual is working on.
@@ -72,10 +72,6 @@ SCRUM_PROMPT = f"""
          - A detailed weekly summary of the work done by each team member, providing a clear overview of the tasks.
          - **Ensure that the team document includes the contributions of all individuals, including those added previously**. When updating the team document, do not remove any existing other contents ,this should be strictly avoided.
 
-    2. Provide the following in your response:
-       - The **number of lines** updated in each document.
-       - Details of **what changes were made** to each document.
-
     3. Ensure all edits adhere to the specified format:
        - Use the provided {sample_formats} for content editing.
        - Submit the edited documents in **Markdown format**.
@@ -83,11 +79,11 @@ SCRUM_PROMPT = f"""
     4. Output the following in **JSON format**:
         - Provide the name of individual **name**.
         - Provide the **team document** and **individual documents** in Markdown format.
-        - Include the **number of lines** updated and **changes made** for each document.
+       
 
     Ensure response includes:
     - "team_document": The team document in Markdown format, preserving all previous individual contributions.
     - "individual_documents": A list of individual documents in Markdown format.
-    - "changes": A detailed list of changes made in JSON format, with the number of lines and what was altered in each document.
+ 
 """
 

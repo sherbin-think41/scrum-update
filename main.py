@@ -80,17 +80,6 @@ def save_documents(scrum_update_json, folder_path="documents"):
 
 
 def compare_texts_and_save(text1, text2, output_path):
-    """
-    Compare two texts, return changes and number of lines changed, and save results to a JSON file.
-
-    Args:
-        text1 (str): First text input.
-        text2 (str): Second text input.
-        output_path (str): Path to save the JSON output.
-
-    Returns:
-        dict: Dictionary containing the changes and the number of lines changed.
-    """
     # Split the texts into lines
     text1_lines = text1.splitlines()
     text2_lines = text2.splitlines()
