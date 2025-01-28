@@ -1,9 +1,10 @@
 {
-    "values_changed": {
-        "root": {
-            "new_value": "# Team Progress Update\n\n## Accomplishments:\n- Completed unit tests for the notification service.\n- Fixed bugs in the authentication module.\n- Finalized the frontend design for the dashboard (in progress).\n\n## Next Steps:\n- Integrate the finalized dashboard design with backend APIs.\n- Test user workflows.\n\n## Weekly Summary:\n- **Jane Smith**: \n  - Completed unit tests for the notification service and fixed bugs in the authentication module.\n  - Currently finalizing the frontend design for the dashboard and addressing feedback from the review meeting.\n  - Next steps include integrating the finalized dashboard design with backend APIs and testing user workflows.\n\n- **Other Team Members**: \n  - [Previous contributions of other team members preserved here...]",
-            "old_value": "documents/team_document.md",
-            "diff": "--- \n+++ \n@@ -1 +1,19 @@\n-documents/team_document.md\n+# Team Progress Update\n+\n+## Accomplishments:\n+- Completed unit tests for the notification service.\n+- Fixed bugs in the authentication module.\n+- Finalized the frontend design for the dashboard (in progress).\n+\n+## Next Steps:\n+- Integrate the finalized dashboard design with backend APIs.\n+- Test user workflows.\n+\n+## Weekly Summary:\n+- **Jane Smith**: \n+  - Completed unit tests for the notification service and fixed bugs in the authentication module.\n+  - Currently finalizing the frontend design for the dashboard and addressing feedback from the review meeting.\n+  - Next steps include integrating the finalized dashboard design with backend APIs and testing user workflows.\n+\n+- **Other Team Members**: \n+  - [Previous contributions of other team members preserved here...]"
-        }
-    }
+    "changes": [
+        "+  - Finalized the frontend design for the dashboard and addressed feedback from the review meeting.",
+        "+  - Completed unit tests for the notification service and fixed bugs in the authentication module.",
+        "+  - Pending clarification on dashboard requirements from the product team.",
+        "+  - Next steps include integrating the finalized dashboard design with backend APIs and testing user workflows.",
+        "+  - [Previous contributions from other team members preserved here]"
+    ],
+    "num_lines_changed": 5
 }
